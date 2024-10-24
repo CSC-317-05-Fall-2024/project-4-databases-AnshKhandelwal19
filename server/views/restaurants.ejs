@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Travel Site</title>
+        <link rel="icon" href="images/icon.svg">
+        <link rel="stylesheet" href="/restaurants.css">
+        <script src="scripts/header.js"></script>
+        <script src="scripts/restaurantCards.js"></script>
+    </head>
+    <body>
+        <header></header>
+        <nav></nav>
+        <div id="content-container">
+            <%//Loops through data object array and loads divs with data within each object%>
+            <% for (let restaurant of restaurantData) { %>
+                <div class="restaurant-container" data-value="<%= restaurant.id %>">
+                    <img class="restaurant-img" src= "<%= restaurant.photo %>">
+                    <div class="restaurant-info">
+                        <p class="restaurant-name"><%= restaurant.name %></p>
+                        <p class="restaurant-address"><%= restaurant.address %> </p>
+                        <p class="restaurant-number"><%= restaurant.phone %></p>
+                        <button class="delete-button"><img class="delete-button-image" src="images/delete-button.png"></button>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+        
+
+        <footer></footer>    
+    </body>
+</html>
