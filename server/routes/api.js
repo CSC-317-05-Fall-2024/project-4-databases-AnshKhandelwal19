@@ -10,15 +10,6 @@ router.post('/restaurants', (req, res) => {
     const newRestaurant = req.body;
     try{
         const restuarant = createRestaurant(newRestaurant);
-
-        //Add restaurant to database
-
-        const insertQuery = `
-        INSERT INTO restaurants (name, phone, address, photo)
-        VALUES
-            ('${restuarant.name}', '${restuarant.phone}', '${restuarant.address}', '${restuarant.photo}')
-        `;
-        pool.query(insertQuery);
         res.status(200).json(restuarant);
     }catch(error) {
         res.status(500).json({"message": `${error}`});
