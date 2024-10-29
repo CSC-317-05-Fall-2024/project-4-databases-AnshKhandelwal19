@@ -1,103 +1,45 @@
-// Fill this in
-let restaurantData = [
-    {
-        "name": "Tofuya-Ukai",
-        "id": 0,
-        "phone": "03-3436-1028",
-        "address": "4 Chome-4-13 Shibakoen, Minato City, Tokyo 105-0011, Japan",
-        "photo": "images/tofuya-ukai.JPG"
-    },
-    {
-        "name": "Sushi Dai",
-        "id": 1,
-        "phone": "81 3-6633-0042",
-        "address": "6 Chome-5-1 Toyosu, Koto City, Tokyo 135-0061, Japan",
-        "photo": "images/SushiDai.jpg"
-    },
-    {
-        "name": "Kawashima Tōfu",
-        "id": 2,
-        "phone": "81 955-72-2423",
-        "address": "1775 Kyomachi, Karatsu, Saga 847-0045, Japan",
-        "photo": "images/KawashimaTōfu.jpg"
-    },
-    {
-        "name": "Menya Saimi",
-        "id": 3,
-        "phone": "81 11-820-6511",
-        "address": "5 Chome-3-12 Misono 10 Jo, Toyohira Ward, Sapporo, Hokkaido 062-0010, Japan",
-        "photo": "images/MenyaSaimi.jpg"
-    },
-    {
-        "name": "Asakusa Imahan",
-        "id": 4,
-        "phone": "81 3-3841-1114",
-        "address": "3 Chome-1-12 Nishiasakusa, Taito City, Tokyo 111-0035, Japan",
-        "photo": "images/AsakusaImahan.jpg"
-    },
-    {
-        "name": "Kozue",
-        "id": 5,
-        "phone": "03-5323-3460",
-        "address": "40th fl, Park Hyatt Tokyo, 3-7-1-2 Nishi-Shinjuku. Shinjuku-ku",
-        "photo": "images/Kozue.jpg"
-    },
-];
-
-let lastId = restaurantData.length - 1;
-
-const getNextId = () => {
-    lastId += 1;
-    return lastId;
-}
+import { pool } from "../config/database.js";
 
 // Get a list of restaurants
-const getRestaurants = () => {
-    return restaurantData;
+const getRestaurants = async () => {
+    const result = await pool.query(`SELECT * FROM restaurants`);
+    return result.rows;
 };
 
-
 // Get a restaurant by id
-const getRestaurant = (id) => {
-    const restaurant = restaurantData.find(restaurantData => restaurantData.id === id);
-    return restaurant;
+const getRestaurant = async (id) => {
+    const result = await pool.query(`SELECT name, phone, address, photo FROM restaurants WHERE id = ${id}`);
+    const restaurant = result.rows[0];
+    const ret = {
+        ...restaurant
+    }
+    console.log(restaurant);
+    return ret;
 };
 
 // Create a new restaurant entry
-const createRestaurant = (newRestaurant) => {
+const createRestaurant = async (newRestaurant) => {
     let restaurant = {
-        id: getNextId(),
         photo: "images/no_image.png",
         ...newRestaurant
     };
-    restaurantData.push(restaurant);
+    await pool.query(`
+        INSERT INTO restaurants (name, phone, address, photo)
+        VALUES ('${restaurant.name}', '${restaurant.phone}', '${restaurant.address}', '${restaurant.photo}')
+        `
+    );
+    await update();
     return restaurant;
 };
 
-//Edit Restaurant
-const editRestaurant = (id, newData) => {
-    let restuarantToUpdate = getRestaurant(id);
-    restaurantData = restaurantData.map(restaurant => {
-        if(restaurant.id !== id) {
-            return restaurant;
-        }
-        let updateRestaurant = {
-            ...restuarantToUpdate,
-            ...newData
-        };
-        return updateRestaurant;
-    });
-    let updateRestaurant = getRestaurant(id);
-    return updateRestaurant;
-};
-
 // Delete a restaurant by id
-const deleteRestaurant = (id) => {
-    const currLength = restaurantData.length;
-    restaurantData = restaurantData.filter(restaurantData => restaurantData.id !== id);
-    const newLength = restaurantData.length;
-    if(newLength === currLength)
-        throw new Error(`Restaurant ${id} not found`);
+const deleteRestaurant = async (id) => {
+    const length = (await getRestaurants()).length;
+    await pool.query(`DELETE FROM restaurants WHERE id=${id}`);
+    await pool.query(`DELETE FROM reviews WHERE restaurant_id=${id}`);
+    const newLength = (await getRestaurants()).length;
+    if(newLength === length)
+        console.log(`Restaurant ${id} not found`);
 };
 
 export { getRestaurants, getRestaurant, createRestaurant, editRestaurant, deleteRestaurant };

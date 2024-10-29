@@ -36,15 +36,15 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 //Render restaurant ejs file with imported data
-app.get('/restaurants', (req, res) => {
-    const restaurantData = getRestaurants();
+app.get('/restaurants', async (req, res) => {
+    const restaurantData = await getRestaurants();
     res.render('restaurants', { restaurantData });
 });
 
 //Render restaurant-details ejs file with specific restaurant id
-app.get('/restaurants/:id', (req, res) => {
+app.get('/restaurants/:id', async (req, res) => {
     const id = parseInt(req.params.id);
-    const restaurant = getRestaurant(id);
+    const restaurant = await getRestaurant(id);
     if(!restaurant) {
         res.render('404', {id});
     }

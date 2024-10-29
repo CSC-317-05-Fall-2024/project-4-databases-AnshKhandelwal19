@@ -1,6 +1,5 @@
 import express from 'express';
 import { createRestaurant, deleteRestaurant, editRestaurant } from '../data/restaurants.js'
-import { pool } from '../config/database.js'
 
 const router = express.Router();
 
@@ -27,7 +26,7 @@ router.patch('/restaurants/:id', (req, res) => {
     };
 });
 
-router.delete('/restaurants/:id', (req, res) => {
+router.delete('/restaurants/:id',  (req, res) => {
     const id = parseInt(req.params.id);
     try{
         const restuarant = deleteRestaurant(id);
