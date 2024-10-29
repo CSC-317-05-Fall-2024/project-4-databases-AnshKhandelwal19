@@ -8,38 +8,37 @@ const getRestaurants = async () => {
 
 // Get a restaurant by id
 const getRestaurant = async (id) => {
-    const result = await pool.query(`SELECT name, phone, address, photo FROM restaurants WHERE id = ${id}`);
-    const restaurant = result.rows[0];
-    const ret = {
-        ...restaurant
-    }
-    console.log(restaurant);
-    return ret;
+    const result = await pool.query(`SELECT name, phone, address, photo FROM restaurants WHERE id=$1`, [id]);
+    return result.rows[0];
 };
 
 // Create a new restaurant entry
 const createRestaurant = async (newRestaurant) => {
-    let restaurant = {
-        photo: "images/no_image.png",
-        ...newRestaurant
-    };
-    await pool.query(`
+    const {name, phone, address, photo} = newRestaurant;
+    if(!photo) photo = "images/no_image.png";
+
+    const result = await pool.query(`
         INSERT INTO restaurants (name, phone, address, photo)
-        VALUES ('${restaurant.name}', '${restaurant.phone}', '${restaurant.address}', '${restaurant.photo}')
-        `
+        VALUES ($1, $2, $3, $4)
+        RETURNING *
+        `, [name, phone, address, photo]
     );
-    await update();
-    return restaurant;
+    return result.rows[0];
+};
+
+const getReviewsForRestaurant = async(id) => {
+    const result = await pool.query(`SELECT * FROM reviews WHERE restaurant_id=$1`, [id]);
+    return result.rows;
 };
 
 // Delete a restaurant by id
 const deleteRestaurant = async (id) => {
     const length = (await getRestaurants()).length;
-    await pool.query(`DELETE FROM reviews WHERE restaurant_id=${id}`);
-    await pool.query(`DELETE FROM restaurants WHERE id=${id}`);
+    await pool.query(`DELETE FROM reviews WHERE restaurant_id=$1`,[id]);
+    await pool.query(`DELETE FROM restaurants WHERE id=$1`,[id]);
     const newLength = (await getRestaurants()).length;
     if(newLength === length)
         console.log(`Restaurant ${id} not found`);
 };
 
-export { getRestaurants, getRestaurant, createRestaurant, deleteRestaurant };
+export { getRestaurants, getRestaurant, createRestaurant, getReviewsForRestaurant, deleteRestaurant };

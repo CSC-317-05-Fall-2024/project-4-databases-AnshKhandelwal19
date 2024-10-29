@@ -59,11 +59,17 @@ const insertData = async () => {
             INSERT INTO reviews (restaurant_id, rating, content)
             VALUES
                 (1, 5, 'Amazing experience!'),
+                (1, 3, 'Not bad, I''ve had better'),
                 (2, 4, 'Great sushi and atmosphere'),
+                (2, 5, 'Wow! Amazing food!'),
                 (3, 3, 'Good, but a bit overpriced'),
+                (3, 4, 'Very much reccomend'),
                 (4, 5, 'Best ramen I have ever had!'),
+                (4, 3, 'Good food, bit on the spicy side for me'),
                 (5, 4, 'Delicious food, great service'),
-                (6, 4, 'Beautiful view and tasty dishes');
+                (5, 3, 'Food wasn''t bad'),
+                (6, 3, 'Food is alright, nice view'),
+                (6, 4, 'Beautiful view, tasty dishes');
         `;
         await pool.query(insertQuery);
         console.log('Added data to restaurants and reviews tables');

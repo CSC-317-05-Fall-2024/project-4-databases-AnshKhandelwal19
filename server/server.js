@@ -1,7 +1,7 @@
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { getRestaurants, getRestaurant} from './data/restaurants.js'
+import { getRestaurants, getRestaurant, getReviewsForRestaurant } from './data/restaurants.js'
 import { backendRouter } from './routes/api.js';
 
 //create express app and port variable
@@ -45,11 +45,12 @@ app.get('/restaurants', async (req, res) => {
 app.get('/restaurants/:id', async (req, res) => {
     const id = parseInt(req.params.id);
     const restaurant = await getRestaurant(id);
+    const reviews = await getReviewsForRestaurant(id);
     if(!restaurant) {
         res.render('404', {id});
     }
     else {
-        res.render('restaurant-details', { restaurant });
+        res.render('restaurant-details', { restaurant, reviews });
     }
 });
 
