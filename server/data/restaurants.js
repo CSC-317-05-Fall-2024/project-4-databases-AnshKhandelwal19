@@ -35,11 +35,11 @@ const createRestaurant = async (newRestaurant) => {
 // Delete a restaurant by id
 const deleteRestaurant = async (id) => {
     const length = (await getRestaurants()).length;
-    await pool.query(`DELETE FROM restaurants WHERE id=${id}`);
     await pool.query(`DELETE FROM reviews WHERE restaurant_id=${id}`);
+    await pool.query(`DELETE FROM restaurants WHERE id=${id}`);
     const newLength = (await getRestaurants()).length;
     if(newLength === length)
         console.log(`Restaurant ${id} not found`);
 };
 
-export { getRestaurants, getRestaurant, createRestaurant, editRestaurant, deleteRestaurant };
+export { getRestaurants, getRestaurant, createRestaurant, deleteRestaurant };

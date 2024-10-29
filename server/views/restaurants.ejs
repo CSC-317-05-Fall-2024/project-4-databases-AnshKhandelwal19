@@ -11,6 +11,12 @@
         <header></header>
         <nav></nav>
         <div id="content-container">
+            <%if(restaurantData.length === 0) {%>
+                <div id="no-restaurants">
+                    <h1>No Restaurant Data</h1>
+                    <p>Please head over to the new restaurant tab and submit a restaurant to be displayed here!</p>
+                </div>
+            <%}%>
             <%//Loops through data object array and loads divs with data within each object%>
             <% for (let restaurant of restaurantData) { %>
                 <div class="restaurant-container" data-value="<%= restaurant.id %>">

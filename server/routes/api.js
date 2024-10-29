@@ -1,5 +1,5 @@
 import express from 'express';
-import { createRestaurant, deleteRestaurant, editRestaurant } from '../data/restaurants.js'
+import { createRestaurant, deleteRestaurant } from '../data/restaurants.js'
 
 const router = express.Router();
 
