@@ -33,7 +33,7 @@ const createTables = async () => {
                 restaurant_id INT NOT NULL,
                 rating INT NOT NULL,
                 content TEXT,
-                FOREIGN KEY (restaurant_id) REFERENCES restaurants(id)
+                FOREIGN KEY (restaurant_id) REFERENCES restaurants(id) ON DELETE CASCADE
             );
         `;
         await pool.query(createTablesQuery);
